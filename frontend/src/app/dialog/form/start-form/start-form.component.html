@@ -1,0 +1,9 @@
+<div *ngIf="editMode">
+  <img class="m-2" src="assets/eu_flag.png" />
+  <p>Rozpocznij edycje uzytkownika:  {{member.basicInformation.name}} {{member.basicInformation.surname}} {{member.basicInformation.pesel}}</p>
+</div>
+<div *ngIf="!editMode">
+  <img class="m-2" src="assets/eu_flag.png" />
+  <p>Kliknij next by rozpoczac wypelnienie formularza!</p>
+</div>
+<button type="button" (click)="next()" class="btn btn-danger mt-1 mb-1" >Next</button>

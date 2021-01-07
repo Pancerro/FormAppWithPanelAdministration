@@ -1,0 +1,22 @@
+<div class="container col-lg-3">
+    <div class="card bg-light">
+        <div class="card-header">Login</div>
+        <div class="card-body">
+            <h5 class="card-title">Zaloguj się do panelu administracyjnego</h5>
+            <form class="form-group card-text">
+                <div class="alert alert-warning" *ngIf='invalidLogin'>{{errorMessage}}</div>
+                <div class="alert alert-success" *ngIf='loginSuccess'>{{successMessage}}</div>
+                <div class="form-group">
+                    <label for="username">User Name :</label>
+                    <input type="text" class="form-control" id="username" [(ngModel)]="username" placeholder="Enter User Name" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" [(ngModel)]="password" id="password" placeholder="Enter password" name="password">
+                </div>
+                <div class="text-center">
+                    <button [disabled]="!(username && password)" (click)=handleLogin() class="btn btn-lg btn-danger">Login</button></div>
+            </form>
+        </div>
+    </div>
+</div>

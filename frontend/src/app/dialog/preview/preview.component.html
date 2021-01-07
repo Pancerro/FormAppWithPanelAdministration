@@ -1,0 +1,29 @@
+<!-- Modal -->
+<div class="modal fade" id={{id}} tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h5  class="modal-title text-center" >Podgląd</h5>
+          <button type="button" class="close" id="closeModalButtonSaveMemberToProject" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="isHtml">
+          <div *ngIf="blocked" [innerHTML]="htmlText | safeHtml" class="card-text">
+          </div>
+          <h1  *ngIf="!blocked">Ta opcja jest nie dostepna na urzadzeniach z szerokoscia mniejsza niz 1000px</h1>
+          </div>
+          <div *ngIf="!isHtml">
+            {{htmlText}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

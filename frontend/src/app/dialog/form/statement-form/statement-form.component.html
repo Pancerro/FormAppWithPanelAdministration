@@ -1,0 +1,43 @@
+<form [formGroup]="statementForm" class="form-group">
+  <div class="form-group">
+    <div class="form-group">
+      <label>Homeless Person:</label>
+      <select id="propertyTypeHomelessPerson" class="form-control form-control-xs" formControlName="homelessPerson">
+        <option [ngValue]="null">Select one...</option>
+        <option [ngValue]="'tak'">Tak</option>
+        <option [ngValue]="'nie'">Nie</option>
+        <option [ngValue]="'odmowa'">Odmowa</option>
+      </select>
+      <div class="alert alert-warning mt-1" *ngIf="statementForm.get('homelessPerson').invalid && statementForm.get('homelessPerson').touched">
+        Invalid Homeless Person
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Another Unfavorable Person Social Situation:</label>
+      <select id="propertyTypeAnotherUnfavorablePersonSocialSituation" class="form-control form-control-xs" formControlName="anotherUnfavorablePersonSocialSituation">
+        <option [ngValue]="null">Select one...</option>
+        <option [ngValue]="'tak'">Tak</option>
+        <option [ngValue]="'nie'">Nie</option>
+        <option [ngValue]="'odmowa'">Odmowa</option>
+      </select>
+      <div class="alert alert-warning mt-1" *ngIf="statementForm.get('anotherUnfavorablePersonSocialSituation').invalid && statementForm.get('anotherUnfavorablePersonSocialSituation').touched">
+        Invalid Another Unfavorable Person Social Situation
+      </div>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" formControlName="statement" type="checkbox" [checked]="statementInput.statement" id="statement">
+      <label class="form-check-label" for="statement">
+        Statement
+      </label>
+    </div>
+    <button type="button" (click)="previous()" class="btn btn-danger mt-1 mb-1" >Previous</button>
+    <button type="button" *ngIf="!editMode" data-toggle="modal" data-target="#modal"  [disabled]="statementForm.invalid" class="btn btn-danger mt-1 mb-1" >Send form</button>
+  </div>
+</form>
+
+<app-yes-or-not-modal *ngIf="editMode==null" [id]="'modal'" [title]="'Potwierdz'" [description]="'Czy jestes pewny poprawnego wypelniania?'" [background]="'bg-warning'" (clickYes)="endForm()"></app-yes-or-not-modal>
+<app-yes-or-not-modal *ngIf="editMode==false" [id]="'modal'" [title]="'Potwierdz'" [description]="'Czy jestes pewny poprawnego wypelniania?'" [background]="'bg-light'" (clickYes)="endForm()"></app-yes-or-not-modal>
+
+

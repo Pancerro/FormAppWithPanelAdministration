@@ -1,0 +1,81 @@
+<div class="container-fluid">
+    <div class="row">
+        <div id="spis_tresci" class="col-lg-2 ">
+            <div class="card bg-light sticky-top    ">
+                <div class="card-header">Spis treści</div>
+                <div class="card-body">
+                    <h5 class="card-title" *ngIf="select[0]">Spis treści - Podsumowanie</h5>
+                    <h5 class="card-title" *ngIf="select[1]">Spis treści - Wydzialy i Kierunki</h5>
+                    <h5 class="card-title" *ngIf="select[2]">Spis treści - Uczestnicy</h5>
+                    <h5 class="card-title" *ngIf="select[3]">Spis treści - Projekty</h5>
+                    <h5 class="card-title" *ngIf="select[4]">Spis treści - Opcje</h5>
+                    <div class="card-text">
+                        <div *ngIf="select[0]" class="list-group">
+                            <a class="list-group-item list-group-item-action" (click)="scroll('summary')">Podsumowanie w liczbach</a>
+                        </div>
+                        <div *ngIf="select[1]" class="list-group">
+                            <a class="list-group-item list-group-item-action" (click)="scroll('tableDepartment')">Table</a>
+                            <a class="list-group-item list-group-item-action" (click)="scroll('chartsDepartment')">Charts</a>
+                        </div>
+                        <div *ngIf="select[2]" class="list-group">
+                            <a class="list-group-item list-group-item-action" (click)="scroll('tableMember')">Table</a>
+                            <a class="list-group-item list-group-item-action" (click)="scroll('chartsMemberAge')">Charts Member Age</a>
+                          <a class="list-group-item list-group-item-action" (click)="scroll('chartsMemberSex')">Charts Member Sex</a>
+                          <a class="list-group-item list-group-item-action" (click)="scroll('chartsMemberEducation')">Charts Member Education</a>
+                          <a class="list-group-item list-group-item-action" (click)="scroll('chartsMemberArea')">Charts Member Area</a>
+
+                        </div>
+                        <div *ngIf="select[3]" class="list-group">
+                            <a class="list-group-item list-group-item-action" (click)="scroll('tableProject')">Table</a>
+                            <a class="list-group-item list-group-item-action" (click)="scroll('chartsProject')">Charts</a>
+                        </div>
+                        <div *ngIf="select[4]" class="list-group">
+                            <a class="list-group-item list-group-item-action" (click)="scroll('options')">Opcje</a>
+                            <a class="list-group-item list-group-item-action" (click)="scroll('otherOptions')">Pozstałe Opcje</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'active': select[0]}" (click)="viewSummary()">Podsumowania</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'active': select[1]}" (click)="viewDepartment()">Wydzialy i Kierunki</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'active': select[2]}" (click)="viewUser()">Uczestnicy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'active': select[3]}" (click)="viewProject()">Projekty</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'active': select[4]}" (click)="viewOptions()">Opcje</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="select[0]">
+                        <app-summary></app-summary>
+                    </div>
+                    <div *ngIf="select[1]">
+                        <app-department></app-department>
+                    </div>
+                    <div *ngIf="select[2]">
+                        <app-user></app-user>
+                    </div>
+                    <div *ngIf="select[3]">
+                        <app-project></app-project>
+                    </div>
+                    <div *ngIf="select[4]">
+                        <app-options></app-options>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

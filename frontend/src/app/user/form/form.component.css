@@ -1,0 +1,15 @@
+.card {
+    margin-bottom: 20px;
+    padding: 10px;
+    color: black;
+    height: 900px;
+    overflow-y: auto;
+}
+
+.btn {
+  width: 100%;
+}
+
+.container {
+    margin-top: 20px;
+}

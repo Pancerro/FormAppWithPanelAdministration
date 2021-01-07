@@ -1,0 +1,141 @@
+<div>
+  <div *ngIf="error" class="alert alert-warning">
+    Wystapił bład, kod błedu: {{error}}.
+    <button type="button" (click)="clearError()" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <h5 class="card-title" id="options">Opcje: </h5>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+          <div *ngIf="!viewWebStarterDesc else loading">
+            <div id="webOptions" class="card-header">Wiadomosc na stronie startowej</div>
+            <div class="card-body">
+              <h5 class="card-title">Opcje</h5>
+              <button type="button" data-toggle="modal" data-target="#modalPreviewWeb" class="btn btn-light btn-lg">Podgląd</button>
+              <button type="button" (click)="editWeb()"  class="btn btn-light btn-lg">Edytuj</button>
+              <button type="button" (click)="saveWeb()" [disabled]="disabledWeb" class="btn btn-light btn-lg">Zapisz</button>
+              <br>
+              <br>
+              <div class="card-text">
+                <form [formGroup]="webStartDescForm" class="form-group">
+                  <div class="form-group">
+                    <label> Subject:</label>
+                    <input [readonly] = "disabledWeb" type="text" formControlName="subject" class="form-control" name="subject" placeholder="Enter Subject">
+                    <div class="alert alert-warning mt-1" *ngIf="webStartDescForm.get('subject').invalid && webStartDescForm.get('subject').touched">
+                      Invalid Subject
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Tekst</label>
+                    <textarea [readonly] = "disabledWeb"  class="form-control" formControlName="text" rows="8"></textarea>
+                  </div>
+
+                  <div  *ngIf="disabledWeb"  class="form-group">
+                    <label>is HTML:</label>
+                    <input [readonly] = "disabledWeb" type="text" formControlName="html" class="form-control" name="html">
+                    <div class="alert alert-warning mt-1" *ngIf="webStartDescForm.get('html').invalid && webStartDescForm.get('html').touched">
+                      Invalid HTML
+                    </div>
+                  </div>
+
+                  <div *ngIf="!disabledWeb" class="form-group">
+                    <label>is HTML: </label>
+                    <select  class="form-control form-control-xs" formControlName="html">
+                      <option  [ngValue]="true">Tak</option>
+                      <option  [ngValue]="false">Nie</option>
+                    </select>
+                    <div class="alert alert-warning mt-1" *ngIf="webStartDescForm.get('html').invalid && webStartDescForm.get('html').touched">
+                      Invalid Is Html
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="col-sm-6">
+        <div *ngIf="!viewAcceptEmail else loading">
+          <div id="emailOptions" class="card-header">Email po wysłaniu formularza</div>
+          <div class="card-body">
+            <h5 class="card-title">Opcje</h5>
+            <button type="button" data-toggle="modal" data-target="#modalPreviewEmail" class="btn btn-light btn-lg">Podgląd</button>
+            <button type="button" (click)="editAcceptEmail()"  class="btn btn-light btn-lg">Edytuj</button>
+            <button type="button" (click)="saveAcceptEmail()" [disabled]="disabledEmail" class="btn btn-light btn-lg">Zapisz</button>
+            <br>
+            <br>
+            <div class="card-text">
+              <form [formGroup]="acceptEmailForm" class="form-group">
+                <div class="form-group">
+                  <label> Subject Email:</label>
+                  <input [readonly] = "disabledEmail" type="text" formControlName="subjectEmail" class="form-control" name="subjectEmail" placeholder="Enter Subject Email">
+                  <div class="alert alert-warning mt-1" *ngIf="acceptEmailForm.get('subjectEmail').invalid && acceptEmailForm.get('subjectEmail').touched">
+                    Invalid Subject Email
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <textarea [readonly] = "disabledEmail"  class="form-control" formControlName="textEmail" rows="8"></textarea>
+                </div>
+
+                <div  *ngIf="disabledEmail"  class="form-group">
+                  <label>is HTML:</label>
+                  <input [readonly] = "disabledEmail" type="text" formControlName="html" class="form-control" name="html">
+                  <div class="alert alert-warning mt-1" *ngIf="acceptEmailForm.get('html').invalid && acceptEmailForm.get('html').touched">
+                    Invalid isHtml
+                  </div>
+                </div>
+
+                <div *ngIf="!disabledEmail" class="form-group">
+                  <label>is HTML: </label>
+                  <select  class="form-control form-control-xs" formControlName="html">
+                    <option  [ngValue]="true">Tak</option>
+                    <option  [ngValue]="false">Nie</option>
+                  </select>
+                  <div class="alert alert-warning mt-1" *ngIf="acceptEmailForm.get('html').invalid && acceptEmailForm.get('html').touched">
+                    Invalid Is Html
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div>
+          <div id="otherOptions" class="card-header">Pozostałe Opcje</div>
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <button type="button" data-toggle="modal" data-target="#modalChangePassword" class="btn btn-light btn-lg">Zmien Hasło</button>
+            <br>
+            <br>
+            <div class="card-text">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+</div>
+
+</div>
+
+<!-- Modal !-->
+<app-preview [id]="'modalPreviewEmail'" [htmlText]="acceptEmail?.textEmail" [isHtml]="acceptEmail?.html"></app-preview>
+<app-preview [id]="'modalPreviewWeb'" [htmlText]="webStarterDesc?.text" [isHtml]="webStarterDesc?.html"></app-preview>
+<app-change-password (newPassword)="newPassword($event)"></app-change-password>
+
+<ng-template #loading>
+  <div class="text-center spinner-size">
+    <div class="spinner-border " style="width: 10rem; height: 10rem;" role="status">
+      <span class="sr-only ">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+
+
+

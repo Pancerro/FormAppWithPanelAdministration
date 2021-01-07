@@ -1,0 +1,877 @@
+<div>
+  <div *ngIf="error" class="alert alert-warning">
+    Wystapił bład, kod błedu: {{error}}.
+    <button type="button" (click)="clearError()" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <h5 id="tableMember" class="card-title">Uczestnicy: </h5>
+  <div *ngIf="!viewTable else loading" class="card-text table-responsive">
+    <div class="mb-2">
+      <div>
+        <button data-toggle="modal" data-target="#modalExportTable" class="btn btn-light btn-lg" type="button">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+          </svg> Export
+        </button>
+       <button type="button" (click)="addMode()" data-toggle="modal" data-target="#modalAdd" class="btn btn-light btn-lg">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg> Add
+        </button>
+        <button [disabled]="!(deleteMember.length>0)" type="button" data-toggle="modal" data-target="#modalDeleteAll" class="btn btn-light btn-lg">Delete</button>
+        <button *ngIf="filtrateTable.length>0" type="button" class="btn btn-light btn-lg" (click)="clearAllFilter()">Clear all filtr</button>
+      </div>
+    </div>
+    <div>
+      <div>
+        <div>
+          <h6 *ngIf="filtrateTable.length>0">Aktywne filtry: </h6>
+        <span  class="badge badge-pill badge-danger m-1 mb-2" style="font-size: 15px;" *ngFor="let filter of filtrateTable; let i = index">
+          {{filter | filterBadge}}
+          <button type="button" (click)="removeFilter(i)"  class="btn btn-danger btn-sm">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+            </button>
+        </span>
+        </div>
+      <div class="input-group mb-3">
+        <label class="d-none" for="filtr">Wartosc filtra</label>
+        <input id="filtr" class="form-control form-control-sm" type="text" [(ngModel)]="filter" placeholder="Wartosc filtra">
+        <div class="input-group-append">
+          <div class="dropdown">
+          <button [disabled]="!filter" (click)="filterExtendAll()" class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownFiltr" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filtruj po...
+          </button>
+          <div class="dropdown-menu" style="overflow-x: scroll; width:300px" aria-labelledby="dropdownFiltr">
+            <a class="dropdown-item" (click)="filterTable('basicInformation.name')">Imie</a>
+            <a class="dropdown-item" (click)="filterTable('basicInformation.surname')">Nazwisko</a>
+            <a class="dropdown-item" (click)="filterTable('basicInformation.pesel')">Pesel</a>
+            <a class="dropdown-item" (click)="filterTable('basicInformation.idNumber')">Numer Dowodu</a>
+            <a class="dropdown-item" (click)="filterTable('basicInformation.education')">Edukacja</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.street')">Ulica</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.houseNumber')">Numer domu</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.township')">Miejscowosc</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.postOffice')">Poczta</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.postalCode')">Kod Pocztowy</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.community')">Gmina</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.district')">Powiat</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.voivodeship')">Wojewodztwo</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.area')">Obszar</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.phoneNumber')">Numer telefonu</a>
+            <a class="dropdown-item" (click)="filterTable('contactDetails.email')">Email</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.unemployedPerson')">Osoba Bezrobotna</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.longTermUnemployed')">Osoba Dlugoterminowo Bezrobotna</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.professionallyInactive')">Osoba Bierna Zawodowo</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.learningPerson')">Osoba Uczaca Sie</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.notLearningPerson')">Osoba Nie Uczaca Sie</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.other')">Inna Osoba</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.working')">Osoba Pracujaca</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.selfEmployed')">Osoba Z Dzialalnoscia Na Wlasny Rachunek</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.employedInMicroSmallMediumEnterprise')">Zatrudniony W Mikro Malym Lub Srednim Przedsiebiorstwie</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.employedInBigEnterprise')">Zatrudniony W Duzym Przedsiobiorstwie</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.employedInGovernmentAdministration')">Zatrudniony W Administracji Rzadowej</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.employedInLocalGovernmentAdministration')">Zatrudniony W Administracji Samorzadowej</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.employedInNonGovernmentalOrganization')">Zatrudniony W Oragnizacji Pozarzadoweja</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.nameOfWorkplace')">Nazwa Miejsca Pracy</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.occupationPerformed')">Nazwa Zawodu</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.nationalMinority')">Mniejszosc Narodowa</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.emigrant')">Emigrant</a>
+            <a class="dropdown-item" (click)="filterTable('laborMarketStatus.disabledPerson')">Osoba Niepelnosprawna</a>
+            <a class="dropdown-item" (click)="filterTable('directionOfEducation.nameUniversity')">Nazwa Uniwersytetu</a>
+            <a class="dropdown-item" (click)="filterTable('directionOfEducation.department')">Wydział</a>
+            <a class="dropdown-item" (click)="filterTable('directionOfEducation.fieldOfStudy')">Kierunek</a>
+            <a class="dropdown-item" (click)="filterTable('directionOfEducation.profile')">Specjalnosc</a>
+            <a class="dropdown-item" (click)="filterTable('directionOfEducation.degreeOfStudies')">Stopien Studiow</a>
+            <a class="dropdown-item" (click)="filterTable('directionOfEducation.yearStudyStart')">Rok rozpoczacie studiow</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.repeatYear')">Powtarzany rok studiow</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.studyingAnotherDirection')">Studiowanie Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.nameUniversity')">Nazwa uniwersytetu Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.department')">Wydział Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.fieldOfStudy')">Kierunek Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.profile')">Specjalnosc  Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.yearStartStudy')">Start Studiowania Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.workPlacementAnother')">Praktyki Innego Kierunku</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.studiedAnotherUniversity')">Studiowanie Na Innych Studiach</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.departmentAnother')">Wydział Na Innych Studiach</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.fieldOfStudyAnother')">Kierunek Na Innych Studiach</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.profileAnother')">Specjalnosc Na Innych Studiach</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.yearStartAndEndStudyAnother')"> Rok Rozpoczecia i Zakonczenia Na Innych Studiach</a>
+            <a class="dropdown-item" (click)="filterTable('additionalInformation.workPlacementAndYearAnother')">Praktyki I Ich Rok Na Innych Studiach</a>
+            <a class="dropdown-item" (click)="filterTable('statement.name')">Osoba Bezdomna</a>
+            <a class="dropdown-item" (click)="filterTable('statement.anotherUnfavorablePersonSocialSituation')">Osoba W Trudnej Socjalnej Sytuacji</a>
+            <a class="dropdown-item" (click)="filterTable('statement.statement')">Akceptacja Oswiadczen</a>
+          </div>
+        </div>
+        </div>
+      </div>
+        <label class="d-none" for="searchInTable">Start searching in table</label>
+        <input id="searchInTable" class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="Start searching in table">
+      </div>
+    <table class="table table-dark">
+      <thead>
+      <tr>
+        <th scope="col" class="pointer" *ngIf="extendAllOrNot" (click)="extendAll()">Extend All
+        <th scope="col" class="pointer" *ngIf="!extendAllOrNot" (click)="extendAll()">Collapsed All
+        <th scope="col">
+          <div class="form-check">
+            <input class="form-check-input position-static" type="checkbox" (click)="selectAllToDelete()" [(ngModel)]="select" value="option1" aria-label="...">
+          </div>
+        </th>
+        <th scope="col" class="pointer" [appSort]="member" data-order="desc" data-name="idMember">#</th>
+        <th scope="col" class="pointer" [appSort]="member" data-order="desc" data-name="basicInformation.name">Name</th>
+        <th scope="col" class="pointer" [appSort]="member" data-order="desc" data-name="basicInformation.surname">Surname</th>
+        <th scope="col" class="pointer" [appSort]="member" data-order="desc" data-name="basicInformation.pesel">Pesel</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Remove</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let member of member | filter:searchText">
+      <tr>
+        <td *ngIf="!extendMember[member?.idMember]" (click)="extend(member?.idMember)">+</td>
+        <td *ngIf="extendMember[member?.idMember]" (click)="extend(member?.idMember)">-</td>
+        <td>
+          <div class="form-check">
+            <input class="form-check-input position-static" type="checkbox" (click)="addDeleteMember(member)" [checked]='checked' value="option1" aria-label="...">
+          </div>
+        </td>
+        <th scope="row">{{member?.idMember}}</th>
+        <td>{{member?.basicInformation.name | noData}}</td>
+        <td>{{member?.basicInformation.surname | noData}}</td>
+        <td>{{member?.basicInformation.pesel | noData}}</td>
+        <td>
+          <button type="button" (click)="editItem(member)" data-toggle="modal" data-target="#modalAdd" class="btn btn-light btn-sm">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+            </svg>
+            Edit
+          </button>
+        </td>
+        <td>
+          <button type="button" (click)="removeItem(member)" data-toggle="modal" data-target="#modalDelete" class="btn btn-light btn-sm">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+            Remove
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="extendMember[member?.idMember]">
+        <td colspan="8">
+          <div class="container">
+            <div class="row">
+              <div class="col border border-secondary">
+                <p class="font-weight-bold mt-1 text-primary">Basic Information</p>
+                <hr>
+                <p>IdNumber: {{member?.basicInformation.idNumber | noData}}</p>
+                <p>Age: {{member?.basicInformation.age | noData}}</p>
+                <p>Education: {{member?.basicInformation.education | noData}}</p>
+                <p class="font-weight-bold mt-1 text-primary">Contact Details</p>
+                <hr>
+                <p>Street: {{member?.contactDetails.street | noData}}</p>
+                <p>House Number: {{member?.contactDetails.houseNumber | noData}}</p>
+                <p>Township: {{member?.contactDetails.township | noData}}</p>
+                <p>Post Office: {{member?.contactDetails.postOffice | noData}}</p>
+                <p>Postal Code: {{member?.contactDetails.postalCode | noData}}</p>
+                <p>Community: {{member?.contactDetails.community | noData}}</p>
+                <p>District: {{member?.contactDetails.district | noData}}</p>
+                <p>Voivodeship: {{member?.contactDetails.voivodeship | noData}}</p>
+                <p>Area: {{member?.contactDetails.area | noData}}</p>
+                <p>Phone Number: {{member?.contactDetails.phoneNumber | noData}}</p>
+                <p>Email: {{member?.contactDetails.email | noData}}</p>
+              </div>
+              <div class="col border border-secondary">
+                <p class="font-weight-bold mt-1 text-primary">Labor Market Status</p>
+                <hr>
+                <p>Unemployed Person: {{member?.laborMarketStatus.unemployedPerson | noData}}</p>
+                <p>Long Term Unemployed: {{member?.laborMarketStatus.longTermUnemployed | noData}}</p>
+                <p>Professionally Inactive: {{member?.laborMarketStatus.professionallyInactive | noData}}</p>
+                <p>Learning Person: {{member?.laborMarketStatus.learningPerson | noData}}</p>
+                <p>Not Learning Person: {{member?.laborMarketStatus.notLearningPerson | noData}}</p>
+                <p>Other: {{member?.laborMarketStatus.other | noData}}</p>
+                <p>Working: {{member?.laborMarketStatus.working | noData}}</p>
+                <p>Self Employed: {{member?.laborMarketStatus.selfEmployed | noData}}</p>
+                <p>Employed In Micro Small Medium Enterprise: {{member?.laborMarketStatus.employedInMicroSmallMediumEnterprise | noData}}</p>
+                <p>Employed In Big Enterprise: {{member?.laborMarketStatus.employedInBigEnterprise | noData}}</p>
+                <p>Employed In Government Administration: {{member?.laborMarketStatus.employedInGovernmentAdministration | noData}}</p>
+                <p>Employed In Local Government Administration: {{member?.laborMarketStatus.employedInLocalGovernmentAdministration | noData}}</p>
+                <p>Employed In Non Governmental Organization: {{member?.laborMarketStatus.employedInNonGovernmentalOrganization | noData}}</p>
+                <p>Name Of Workplace: {{member?.laborMarketStatus.nameOfWorkplace | noData}}</p>
+                <p>Occupation Performed:{{member?.laborMarketStatus.occupationPerformed | noData}}</p>
+                <p>National Minority: {{member?.laborMarketStatus.nationalMinority | noData}}</p>
+                <p>Emigrant: {{member?.laborMarketStatus.emigrant | noData}}</p>
+                <p>Disabled Person: {{member?.laborMarketStatus.disabledPerson | noData}}</p>
+              </div>
+              <div class="w-100"></div>
+              <div class="col border border-secondary">
+                <p class="font-weight-bold mt-1 text-primary">Additional Information</p>
+                <hr>
+                <p>Repeat Year: {{member?.additionalInformation.repeatYear | noData}}</p>
+                <p>Studying Another Direction: {{member?.additionalInformation.studyingAnotherDirection | noData}}</p>
+                <p>Name University: {{member?.additionalInformation.nameUniversity | noData}}</p>
+                <p>Department: {{member?.additionalInformation.department | noData}}</p>
+                <p>Field Of Study: {{member?.additionalInformation.fieldOfStudy | noData}}</p>
+                <p>Profile: {{member?.additionalInformation.profile | noData}}</p>
+                <p>Year Start Study: {{member?.additionalInformation.yearStartStudy | noData}}</p>
+                <p>Work Placement And Year: {{member?.additionalInformation.workPlacementAndYear | noData}}</p>
+                <p>Studied Another University: {{member?.additionalInformation.studiedAnotherUniversity | noData}}</p>
+                <p>Name Another University: {{member?.additionalInformation.nameAnotherUniversity | noData}}</p>
+                <p>Department Another: {{member?.additionalInformation.departmentAnother | noData}}</p>
+                <p>Field Of Study Another: {{member?.additionalInformation.fieldOfStudyAnother | noData}}</p>
+                <p>Profile Another: {{member?.additionalInformation.profileAnother | noData}}</p>
+                <p>Year Start And End Study Another: {{member?.additionalInformation.yearStartAndEndStudyAnother | noData}}</p>
+                <p>Work Placement And Year Another: {{member?.additionalInformation.workPlacementAndYearAnother | noData}}</p>
+              </div>
+              <div class="col border border-secondary">
+                <p class="font-weight-bold mt-1 text-primary">Direction Of Education</p>
+                <hr>
+                <p>Name University: {{member?.directionOfEducation.nameUniversity | noData}}</p>
+                <p>Department: {{member?.directionOfEducation.department | noData}}</p>
+                <p>Field Of Study: {{member?.directionOfEducation.fieldOfStudy | noData}}</p>
+                <p>Profile: {{member?.directionOfEducation.profile | noData}}</p>
+                <p>Degree Of Studies: {{member?.directionOfEducation.degreeOfStudies | noData}}</p>
+                <p>Year Start Study: {{member?.directionOfEducation.yearStartStudy | noData}}</p>
+                <p class="font-weight-bold mt-1 text-primary">Statement</p>
+                <hr>
+                <p>Homeless Person: {{member?.statement.homelessPerson | noData}}</p>
+                <p>Another Unfavorable Person Social Situation: {{member?.statement.anotherUnfavorablePersonSocialSituation | noData}}</p>
+                <p>Statement: {{member?.statement.statement | noData}}</p>
+              </div>
+
+            </div>
+          </div>
+        </td>
+      </tr></ng-container>
+      </tbody>
+    </table>
+    <div  *ngIf="(member | filter:searchText) as result">
+    <p class="alert alert-warning" *ngIf="result.length==0"> No results</p>
+    </div>
+    </div>
+
+  </div>
+  <h1>Wykresy: <button type="button" class="btn btn-light btn-sm" (click)="extendCharts()"><span *ngIf="viewChart">Ukryj</span><span *ngIf="!viewChart">Rozwin</span></button> </h1>
+  <div *ngIf="viewChart">
+  <h5 id="chartsMemberAge" class="card-title">Wykres wieku osób: </h5>
+  <div *ngIf="!viewAgeChart else loading"  class="card-body line-chart-parent">
+    <ngx-charts-bar-vertical [results]="chartsAgeToPeople" [xAxisLabel]="'Wiek'" [legendTitle]="'Wiek osob'" [yAxisLabel]="'Liczba uczestników'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
+    </ngx-charts-bar-vertical>
+  </div>
+  <h5 id="chartsMemberSex" class="card-title">Wykres plci osób: </h5>
+  <div *ngIf="!viewSexChart else loading"  class="card-body line-chart-parent">
+    <ngx-charts-bar-vertical [results]="chartsSexInMember" [xAxisLabel]="'Płec'" [legendTitle]="'Osoby o danej plci'" [yAxisLabel]="'Liczba osob'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
+    </ngx-charts-bar-vertical>
+  </div>
+  <h5 id="chartsMemberEducation" class="card-title">Wykres edukacji osób: </h5>
+  <div *ngIf="!viewEducationChart else loading"  class="card-body line-chart-parent">
+    <ngx-charts-bar-vertical [results]="chartsEducationInMember" [xAxisLabel]="'Edukacja'" [legendTitle]="'Osoby o danej edukacji'" [yAxisLabel]="'Liczba osob'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
+    </ngx-charts-bar-vertical>
+  </div>
+  <h5 id="chartsMemberArea" class="card-title">Wykres obszaru osób: </h5>
+  <div *ngIf="!viewAreaChart else loading"  class="card-body line-chart-parent">
+    <ngx-charts-bar-vertical [results]="chartsAreaInMember" [xAxisLabel]="'Obszar'" [legendTitle]="'Osoby o danym obszarsze'" [yAxisLabel]="'Liczba osob'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
+    </ngx-charts-bar-vertical>
+  </div>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="text-center spinner-size">
+    <div class="spinner-border " style="width: 10rem; height: 10rem;" role="status">
+      <span class="sr-only ">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+<!-- modal !-->
+<app-yes-or-not-modal [id]="'modalDeleteAll'" [title]="'Potwierdz'" [description]="'Czy jestes pewny ze chcesz usunąc wszystkich zaznaczonych uczestnikow?'" [background]="'bg-light'" (clickYes)="deleteAll()"></app-yes-or-not-modal>
+<app-yes-or-not-modal [id]="'modalDelete'" [title]="'Potwierdz'" [description]="'Czy jestes pewny ze chcesz usunąc uczestnika '+removeMember?.basicInformation.name+ ' ' +removeMember?.basicInformation.surname+' ?'" [background]="'bg-light'" (clickYes)="remove(removeMember?.idMember)"></app-yes-or-not-modal>
+<app-edit-member-modal [editMode]="editMode" [editMember]="editMember" [viewForm]="viewForm" (newMember)="addOrEdit()"></app-edit-member-modal>
+
+<div class="modal fade" id="modalExportTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content text-center">
+      <div class="bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="exampleModalLongTitle">Export Member Table</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+          <select id="exportType" class="form-control form-control-xs" [(ngModel)]="exportType">
+            <option [ngValue]="null">Select export type...</option>
+            <option [ngValue]="'TXT'">TXT</option>
+            <option [ngValue]="'XLS'">XLS</option>
+            <option [ngValue]="'XLSX'">XLSX</option>
+            <option [ngValue]="'XML'">XML</option>
+            <option [ngValue]="'JSON'">JSON</option>
+            <option [ngValue]="'PDF'">PDF</option>
+          </select>
+          </div>
+          <br>
+          <div *ngIf="exportType == 'PDF'" >
+            <select id="colorType" class="form-control form-control-xs bg-" [(ngModel)]="colorType">
+              <option [ngValue]="null">Default color</option>
+              <option [ngValue]="'table-light'">table-light</option>
+              <option [ngValue]="'table-primary'">table-primary</option>
+              <option [ngValue]="'table-secondary'">table-secondary</option>
+              <option [ngValue]="'table-secondary'">table-secondary</option>
+              <option [ngValue]="'table-success'">table-success</option>
+              <option [ngValue]="'table-danger'">table-danger</option>
+              <option [ngValue]="'table-warning'">table-warning</option>
+              <option [ngValue]="'table-info'">table-info</option>
+              <option [ngValue]="'table-dark'">table-dark</option>
+            </select>
+          </div>
+          <br>
+          <h5>Export Column <button type="button" class="btn btn-light btn-sm" (click)="extendExportColumn()"><span *ngIf="viewExportColumn">Ukryj</span><span *ngIf="!viewExportColumn">Rozwin</span></button></h5>
+          <div *ngIf="viewExportColumn">
+            <div>
+              <button type="button" class="btn btn-light btn-sm" (click)="hideAllExportColumn()"><span>Hide All</span></button>
+              <button type="button" class="btn btn-light btn-sm" (click)="showAllExportColumn()"><span>Show All</span></button>
+            </div>
+            <div *ngIf="exportType == 'PDF'">
+            <div  class="form-check form-check-inline">
+              <input [checked]='!hideColumn[60]' class="form-check-input" type="checkbox" (click)="hideExportColumn(60)">
+              <label class="form-check-label">Basic Information</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[61]' class="form-check-input" type="checkbox" (click)="hideExportColumn(61)">
+            <label class="form-check-label">Labor Market Status</label>
+          </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[62]' class="form-check-input" type="checkbox" (click)="hideExportColumn(62)">
+            <label class="form-check-label">Contact Details</label>
+          </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[63]' class="form-check-input" type="checkbox" (click)="hideExportColumn(63)">
+            <label class="form-check-label">Additional Information</label>
+          </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[64]' class="form-check-input" type="checkbox" (click)="hideExportColumn(64)">
+            <label class="form-check-label">Direction of Education</label>
+          </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[65]' class="form-check-input" type="checkbox" (click)="hideExportColumn(65)">
+            <label class="form-check-label">Statement</label>
+          </div>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[0]' class="form-check-input" type="checkbox" (click)="hideExportColumn(0)">
+              <label class="form-check-label">#</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[1]' class="form-check-input" type="checkbox" (click)="hideExportColumn(1)">
+              <label class="form-check-label">Name</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[2]' class="form-check-input" type="checkbox" (click)="hideExportColumn(2)">
+              <label class="form-check-label" >Surname</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[3]' class="form-check-input" type="checkbox" (click)="hideExportColumn(3)">
+              <label class="form-check-label">Pesel</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[4]' class="form-check-input" type="checkbox" (click)="hideExportColumn(4)">
+              <label class="form-check-label">idNumber</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[5]' class="form-check-input" type="checkbox" (click)="hideExportColumn(5)">
+              <label class="form-check-label" >Age</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[6]' class="form-check-input" type="checkbox" (click)="hideExportColumn(6)">
+            <label class="form-check-label">Education</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[7]' class="form-check-input" type="checkbox" (click)="hideExportColumn(7)">
+              <label class="form-check-label">Street</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[8]' class="form-check-input" type="checkbox" (click)="hideExportColumn(8)">
+              <label class="form-check-label" >HouseNumber</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[9]' class="form-check-input" type="checkbox" (click)="hideExportColumn(9)">
+            <label class="form-check-label">Township</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[10]' class="form-check-input" type="checkbox" (click)="hideExportColumn(10)">
+              <label class="form-check-label">PostOffice</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[11]' class="form-check-input" type="checkbox" (click)="hideExportColumn(11)">
+              <label class="form-check-label" >PostalCode</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[12]' class="form-check-input" type="checkbox" (click)="hideExportColumn(12)">
+            <label class="form-check-label">Community</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[13]' class="form-check-input" type="checkbox" (click)="hideExportColumn(13)">
+              <label class="form-check-label">District</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[14]' class="form-check-input" type="checkbox" (click)="hideExportColumn(14)">
+              <label class="form-check-label" >Voivodeship</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[15]' class="form-check-input" type="checkbox" (click)="hideExportColumn(15)">
+            <label class="form-check-label">Area</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[16]' class="form-check-input" type="checkbox" (click)="hideExportColumn(16)">
+              <label class="form-check-label">PhoneNumber</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[17]' class="form-check-input" type="checkbox" (click)="hideExportColumn(17)">
+              <label class="form-check-label" >Email</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[18]' class="form-check-input" type="checkbox" (click)="hideExportColumn(18)">
+            <label class="form-check-label">UnemployedPerson</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[19]' class="form-check-input" type="checkbox" (click)="hideExportColumn(19)">
+              <label class="form-check-label">LongTermUnemployed</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[20]' class="form-check-input" type="checkbox" (click)="hideExportColumn(20)">
+              <label class="form-check-label" >ProfessionallyInactive</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[21]' class="form-check-input" type="checkbox" (click)="hideExportColumn(21)">
+            <label class="form-check-label">LearningPerson</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[22]' class="form-check-input" type="checkbox" (click)="hideExportColumn(22)">
+              <label class="form-check-label">NotLearningPerson</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[23]' class="form-check-input" type="checkbox" (click)="hideExportColumn(23)">
+              <label class="form-check-label" >Other</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[24]' class="form-check-input" type="checkbox" (click)="hideExportColumn(24)">
+            <label class="form-check-label">Working</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[25]' class="form-check-input" type="checkbox" (click)="hideExportColumn(25)">
+              <label class="form-check-label">SelfEmployed</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[26]' class="form-check-input" type="checkbox" (click)="hideExportColumn(26)">
+              <label class="form-check-label" >EmployedInMicroSmallMediumEnterprise</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[27]' class="form-check-input" type="checkbox" (click)="hideExportColumn(27)">
+            <label class="form-check-label">EmployedInBigEnterprise</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[28]' class="form-check-input" type="checkbox" (click)="hideExportColumn(28)">
+              <label class="form-check-label">EmployedInGovernmentAdministration</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[29]' class="form-check-input" type="checkbox" (click)="hideExportColumn(29)">
+              <label class="form-check-label" >EmployedInLocalGovernmentAdministration</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[30]' class="form-check-input" type="checkbox" (click)="hideExportColumn(30)">
+            <label class="form-check-label">EmployedInNonGovernmentalOrganization</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[31]' class="form-check-input" type="checkbox" (click)="hideExportColumn(31)">
+              <label class="form-check-label">NameOfWorkplace</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[32]' class="form-check-input" type="checkbox" (click)="hideExportColumn(32)">
+              <label class="form-check-label" >OccupationPerformed</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[33]' class="form-check-input" type="checkbox" (click)="hideExportColumn(33)">
+            <label class="form-check-label">NationalMinority</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[34]' class="form-check-input" type="checkbox" (click)="hideExportColumn(34)">
+              <label class="form-check-label">Emigrant</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[35]' class="form-check-input" type="checkbox" (click)="hideExportColumn(35)">
+              <label class="form-check-label" >DisabledPerson</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[36]' class="form-check-input" type="checkbox" (click)="hideExportColumn(36)">
+            <label class="form-check-label">NameUniversity</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[37]' class="form-check-input" type="checkbox" (click)="hideExportColumn(37)">
+              <label class="form-check-label">Department</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[38]' class="form-check-input" type="checkbox" (click)="hideExportColumn(38)">
+              <label class="form-check-label" >FieldOfStudy</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[39]' class="form-check-input" type="checkbox" (click)="hideExportColumn(39)">
+            <label class="form-check-label">Profile</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[40]' class="form-check-input" type="checkbox" (click)="hideExportColumn(40)">
+              <label class="form-check-label">DegreeOfStudies</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[41]' class="form-check-input" type="checkbox" (click)="hideExportColumn(41)">
+              <label class="form-check-label" >YearStudyStart</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[42]' class="form-check-input" type="checkbox" (click)="hideExportColumn(42)">
+            <label class="form-check-label">RepeatYear</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[43]' class="form-check-input" type="checkbox" (click)="hideExportColumn(43)">
+              <label class="form-check-label">StudyingAnotherDirection</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[44]' class="form-check-input" type="checkbox" (click)="hideExportColumn(44)">
+              <label class="form-check-label" >NameUniversity</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[45]' class="form-check-input" type="checkbox" (click)="hideExportColumn(45)">
+            <label class="form-check-label">Department</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[46]' class="form-check-input" type="checkbox" (click)="hideExportColumn(46)">
+              <label class="form-check-label">FieldOfStudy</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[47]' class="form-check-input" type="checkbox" (click)="hideExportColumn(47)">
+              <label class="form-check-label" >Profile</label>
+            </div>
+            <div class="form-check form-check-inline">
+            <input [checked]='!hideColumn[48]' class="form-check-input" type="checkbox" (click)="hideExportColumn(48)">
+            <label class="form-check-label">YearStartStudy</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[49]' class="form-check-input" type="checkbox" (click)="hideExportColumn(49)">
+              <label class="form-check-label">WorkPlaemenentAnother</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[50]' class="form-check-input" type="checkbox" (click)="hideExportColumn(50)">
+              <label class="form-check-label" >StudiedAnotherUniversity</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[51]' class="form-check-input" type="checkbox" (click)="hideExportColumn(51)">
+              <label class="form-check-label" >NameAnotherUniversity</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[52]' class="form-check-input" type="checkbox" (click)="hideExportColumn(52)">
+              <label class="form-check-label" >DepartmentAnother</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[53]' class="form-check-input" type="checkbox" (click)="hideExportColumn(53)">
+              <label class="form-check-label" >FieldOfStudyAnother</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[54]' class="form-check-input" type="checkbox" (click)="hideExportColumn(54)">
+              <label class="form-check-label" >ProfileAnother</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[55]' class="form-check-input" type="checkbox" (click)="hideExportColumn(55)">
+              <label class="form-check-label" >YearStartAndEndStudyAnother</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[56]' class="form-check-input" type="checkbox" (click)="hideExportColumn(56)">
+              <label class="form-check-label" >WorkPlacementAndYearAnother</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[57]' class="form-check-input" type="checkbox" (click)="hideExportColumn(57)">
+              <label class="form-check-label" >HomelessPerson</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[58]' class="form-check-input" type="checkbox" (click)="hideExportColumn(58)">
+              <label class="form-check-label" >AnotherUnfavorablePersonSocialSituation</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [checked]='!hideColumn[59]' class="form-check-input" type="checkbox" (click)="hideExportColumn(59)">
+              <label class="form-check-label" >Statement</label>
+            </div>
+          </div>
+          <br>
+          <table *ngIf="exportType == 'PDF'" [className]="colorType" class="table table-responsive" id="exportTable">
+            <thead>
+            <tr>
+              <th *ngIf="!hideColumn[0]" scope="col">#</th>
+              <th *ngIf="!hideColumn[1]" scope="col">Name</th>
+              <th *ngIf="!hideColumn[2]" scope="col">Surname</th>
+              <th *ngIf="!hideColumn[3]" scope="col">Pesel</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let member of member | filter:searchText">
+              <tr>
+                <th *ngIf="!hideColumn[0]" scope="row">{{member?.idMember}}</th>
+                <td *ngIf="!hideColumn[1]">{{member?.basicInformation.name}}</td>
+                <td *ngIf="!hideColumn[2]">{{member?.basicInformation.surname}}</td>
+                <td *ngIf="!hideColumn[3]">{{member?.basicInformation.pesel | noData}}</td>
+              </tr>
+              <tr *ngIf="!(hideColumn[60] && hideColumn[61] && hideColumn[62] && hideColumn[63] && hideColumn[64] && hideColumn[65])">
+                <td colspan="4">
+                  <div class="container">
+                    <div class="row">
+                      <div *ngIf="!(hideColumn[60] && hideColumn[62])" class="col border border-secondary" >
+                        <div *ngIf="!hideColumn[60]">
+                        <p class="font-weight-bold mt-1 text-primary">Basic Information</p>
+                        <hr>
+                        <p *ngIf="!hideColumn[4]">IdNumber: {{member?.basicInformation.idNumber | noData}}</p>
+                        <p *ngIf="!hideColumn[5]">Age: {{member?.basicInformation.age | noData}}</p>
+                        <p *ngIf="!hideColumn[6]">Education: {{member?.basicInformation.education | noData}}</p>
+                        </div>
+                        <div *ngIf="!hideColumn[62]">
+                        <p class="font-weight-bold mt-1 text-primary">Contact Details</p>
+                        <hr>
+                        <p *ngIf="!hideColumn[7]">Street: {{member?.contactDetails.street | noData}}</p>
+                        <p *ngIf="!hideColumn[8]">House Number: {{member?.contactDetails.houseNumber | noData}}</p>
+                        <p *ngIf="!hideColumn[9]">Township: {{member?.contactDetails.township | noData}}</p>
+                        <p *ngIf="!hideColumn[10]">Post Office: {{member?.contactDetails.postOffice | noData}}</p>
+                        <p *ngIf="!hideColumn[11]">Postal Code: {{member?.contactDetails.postalCode | noData}}</p>
+                        <p *ngIf="!hideColumn[12]">Community: {{member?.contactDetails.community | noData}}</p>
+                        <p *ngIf="!hideColumn[13]">District: {{member?.contactDetails.district | noData}}</p>
+                        <p *ngIf="!hideColumn[14]">Voivodeship: {{member?.contactDetails.voivodeship | noData}}</p>
+                        <p *ngIf="!hideColumn[15]">Area: {{member?.contactDetails.area | noData}}</p>
+                        <p *ngIf="!hideColumn[16]">Phone Number: {{member?.contactDetails.phoneNumber | noData}}</p>
+                        <p *ngIf="!hideColumn[17]">Email: {{member?.contactDetails.email | noData}}</p>
+                        </div>
+                      </div>
+                      <div *ngIf="!hideColumn[61]" class="col border border-secondary">
+                        <div *ngIf="!hideColumn[61]">
+                        <p class="font-weight-bold mt-1 text-primary">Labor Market Status</p>
+                        <hr>
+                        <p *ngIf="!hideColumn[18]">Unemployed Person: {{member?.laborMarketStatus.unemployedPerson | noData}}</p>
+                        <p *ngIf="!hideColumn[19]">Long Term Unemployed: {{member?.laborMarketStatus.longTermUnemployed | noData}}</p>
+                        <p *ngIf="!hideColumn[20]">Professionally Inactive: {{member?.laborMarketStatus.professionallyInactive | noData}}</p>
+                        <p *ngIf="!hideColumn[21]">Learning Person: {{member?.laborMarketStatus.learningPerson | noData}}</p>
+                        <p *ngIf="!hideColumn[22]">Not Learning Person: {{member?.laborMarketStatus.notLearningPerson | noData}}</p>
+                        <p *ngIf="!hideColumn[23]">Other: {{member?.laborMarketStatus.other | noData}}</p>
+                        <p *ngIf="!hideColumn[24]">Working: {{member?.laborMarketStatus.working | noData}}</p>
+                        <p *ngIf="!hideColumn[25]">Self Employed: {{member?.laborMarketStatus.selfEmployed | noData}}</p>
+                        <p *ngIf="!hideColumn[26]">Employed In Micro Small Medium Enterprise: {{member?.laborMarketStatus.employedInMicroSmallMediumEnterprise | noData}}</p>
+                        <p *ngIf="!hideColumn[27]">Employed In Big Enterprise: {{member?.laborMarketStatus.employedInBigEnterprise | noData}}</p>
+                        <p *ngIf="!hideColumn[28]">Employed In Government Administration: {{member?.laborMarketStatus.employedInGovernmentAdministration | noData}}</p>
+                        <p *ngIf="!hideColumn[29]">Employed In Local Government Administration: {{member?.laborMarketStatus.employedInLocalGovernmentAdministration | noData}}</p>
+                        <p *ngIf="!hideColumn[30]">Employed In Non Governmental Organization: {{member?.laborMarketStatus.employedInNonGovernmentalOrganization | noData}}</p>
+                        <p *ngIf="!hideColumn[31]">Name Of Workplace: {{member?.laborMarketStatus.nameOfWorkplace | noData}}</p>
+                        <p *ngIf="!hideColumn[32]">Occupation Performed:{{member?.laborMarketStatus.occupationPerformed | noData}}</p>
+                        <p *ngIf="!hideColumn[33]">National Minority: {{member?.laborMarketStatus.nationalMinority | noData}}</p>
+                        <p *ngIf="!hideColumn[34]">Emigrant: {{member?.laborMarketStatus.emigrant | noData}}</p>
+                        <p *ngIf="!hideColumn[35]">Disabled Person: {{member?.laborMarketStatus.disabledPerson | noData}}</p>
+                        </div>
+                      </div>
+                      <div class="w-100"></div>
+                      <div *ngIf="!hideColumn[63]" class="col border border-secondary">
+                        <div *ngIf="!hideColumn[63]">
+                        <p class="font-weight-bold mt-1 text-primary">Additional Information</p>
+                        <hr>
+                        <p *ngIf="!hideColumn[36]">Repeat Year: {{member?.additionalInformation.repeatYear | noData}}</p>
+                        <p *ngIf="!hideColumn[37]">Studying Another Direction: {{member?.additionalInformation.studyingAnotherDirection | noData}}</p>
+                        <p *ngIf="!hideColumn[38]">Name University: {{member?.additionalInformation.nameUniversity | noData}}</p>
+                        <p *ngIf="!hideColumn[39]">Department: {{member?.additionalInformation.department | noData}}</p>
+                        <p *ngIf="!hideColumn[40]">Field Of Study: {{member?.additionalInformation.fieldOfStudy | noData}}</p>
+                        <p *ngIf="!hideColumn[41]">Profile: {{member?.additionalInformation.profile | noData}}</p>
+                        <p *ngIf="!hideColumn[42]">Year Start Study: {{member?.additionalInformation.yearStartStudy | noData}}</p>
+                        <p *ngIf="!hideColumn[43]">Work Placement And Year: {{member?.additionalInformation.workPlacementAndYear | noData}}</p>
+                        <p *ngIf="!hideColumn[44]">Studied Another University: {{member?.additionalInformation.studiedAnotherUniversity | noData}}</p>
+                        <p *ngIf="!hideColumn[45]">Name Another University: {{member?.additionalInformation.nameAnotherUniversity | noData}}</p>
+                        <p *ngIf="!hideColumn[46]">Department Another: {{member?.additionalInformation.departmentAnother | noData}}</p>
+                        <p *ngIf="!hideColumn[47]">Field Of Study Another: {{member?.additionalInformation.fieldOfStudyAnother | noData}}</p>
+                        <p *ngIf="!hideColumn[48]">Profile Another: {{member?.additionalInformation.profileAnother | noData}}</p>
+                        <p *ngIf="!hideColumn[49]">Year Start And End Study Another: {{member?.additionalInformation.yearStartAndEndStudyAnother | noData}}</p>
+                        <p *ngIf="!hideColumn[50]">Work Placement And Year Another: {{member?.additionalInformation.workPlacementAndYearAnother | noData}}</p>
+                        </div>
+                      </div>
+                      <div *ngIf="!(hideColumn[64] && hideColumn[65])" class="col border border-secondary">
+                        <div *ngIf="!hideColumn[64]">
+                        <p class="font-weight-bold mt-1 text-primary">Direction Of Education</p>
+                        <hr>
+                        <p *ngIf="!hideColumn[51]">Name University: {{member?.directionOfEducation.nameUniversity | noData}}</p>
+                        <p *ngIf="!hideColumn[52]">Department: {{member?.directionOfEducation.department | noData}}</p>
+                        <p *ngIf="!hideColumn[53]">Field Of Study: {{member?.directionOfEducation.fieldOfStudy | noData}}</p>
+                        <p *ngIf="!hideColumn[54]">Profile: {{member?.directionOfEducation.profile | noData}}</p>
+                        <p *ngIf="!hideColumn[55]">Degree Of Studies: {{member?.directionOfEducation.degreeOfStudies | noData}}</p>
+                        <p *ngIf="!hideColumn[56]">Year Start Study: {{member?.directionOfEducation.yearStartStudy | noData}}</p>
+                        </div>
+                        <div *ngIf="!hideColumn[65]">
+                        <p class="font-weight-bold mt-1 text-primary">Statement</p>
+                        <hr>
+                        <p *ngIf="!hideColumn[57]">Homeless Person: {{member?.statement.homelessPerson | noData}}</p>
+                        <p *ngIf="!hideColumn[58]">Another Unfavorable Person Social Situation: {{member?.statement.anotherUnfavorablePersonSocialSituation | noData}}</p>
+                        <p *ngIf="!hideColumn[59]">Statement: {{member?.statement.statement | noData}}</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </td>
+              </tr></ng-container>
+            </tbody>
+          </table>
+          <table *ngIf="exportType != 'PDF'" class="table table-light table-responsive" id="exportTable">
+            <thead>
+            <tr>
+              <th *ngIf="!hideColumn[0]" scope="col">#</th>
+              <th *ngIf="!hideColumn[1]" scope="col">Name</th>
+              <th *ngIf="!hideColumn[2]" scope="col">Surname</th>
+              <th *ngIf="!hideColumn[3]" scope="col">Pesel</th>
+              <th *ngIf="!hideColumn[4]" scope="col">IdNumber</th>
+              <th *ngIf="!hideColumn[5]" scope="col">Age</th>
+              <th *ngIf="!hideColumn[6]" scope="col">Education</th >
+
+              <th *ngIf="!hideColumn[7]" scope="col">Street</th>
+              <th *ngIf="!hideColumn[8]" scope="col">HouseNumber</th>
+              <th *ngIf="!hideColumn[9]" scope="col">Township</th>
+              <th *ngIf="!hideColumn[10]" scope="col">PostOffice</th>
+              <th *ngIf="!hideColumn[11]" scope="col">PostalCode</th>
+              <th *ngIf="!hideColumn[12]" scope="col">Community</th>
+              <th *ngIf="!hideColumn[13]" scope="col">District</th>
+              <th *ngIf="!hideColumn[14]" scope="col">Voivodeship</th>
+              <th *ngIf="!hideColumn[15]" scope="col">Area</th>
+              <th *ngIf="!hideColumn[16]" scope="col">PhoneNumber</th>
+              <th *ngIf="!hideColumn[17]" scope="col">Email</th>
+
+              <th *ngIf="!hideColumn[18]" scope="col">UnemployedPerson</th>
+              <th *ngIf="!hideColumn[19]" scope="col">LongTermUnemployed</th>
+              <th *ngIf="!hideColumn[20]" scope="col">ProfessionallyInactive</th>
+              <th *ngIf="!hideColumn[21]" scope="col">LearningPerson</th>
+              <th *ngIf="!hideColumn[22]" scope="col">NotLearningPerson</th>
+              <th *ngIf="!hideColumn[23]" scope="col">Other</th>
+              <th *ngIf="!hideColumn[24]" scope="col">Working</th>
+              <th *ngIf="!hideColumn[25]" scope="col">SelfEmployed</th>
+              <th *ngIf="!hideColumn[26]" scope="col">EmployedInMicroSmallMediumEnterprise</th>
+              <th *ngIf="!hideColumn[27]" scope="col">EmployedInBigEnterprise</th>
+              <th *ngIf="!hideColumn[28]" scope="col">EmployedInGovernmentAdministration</th>
+              <th *ngIf="!hideColumn[29]" scope="col">EmployedInLocalGovernmentAdministration</th>
+              <th *ngIf="!hideColumn[30]" scope="col">EmployedInNonGovernmentalOrganization</th>
+              <th *ngIf="!hideColumn[31]" scope="col">NameOfWorkplace: </th>
+              <th *ngIf="!hideColumn[32]" scope="col">OccupationPerformed: </th>
+              <th *ngIf="!hideColumn[33]" scope="col">NationalMinority</th>
+              <th *ngIf="!hideColumn[34]" scope="col">Emigrant</th>
+              <th *ngIf="!hideColumn[35]" scope="col">DisabledPerson</th>
+
+              <th *ngIf="!hideColumn[36]" scope="col">NameUniversity</th>
+              <th *ngIf="!hideColumn[37]" scope="col">Department</th>
+              <th *ngIf="!hideColumn[38]" scope="col">FieldOfStudy</th>
+              <th *ngIf="!hideColumn[39]" scope="col">Profile</th>
+              <th *ngIf="!hideColumn[40]" scope="col">DegreeOfStudies</th>
+              <th *ngIf="!hideColumn[41]" scope="col">YearStudyStart</th>
+
+              <th *ngIf="!hideColumn[42]" scope="col">RepeatYear</th>
+              <th *ngIf="!hideColumn[43]" scope="col">StudyingAnotherDirection: </th>
+              <th *ngIf="!hideColumn[44]" scope="col">NameUniversity</th>
+              <th *ngIf="!hideColumn[45]" scope="col">Department</th>
+              <th *ngIf="!hideColumn[46]" scope="col">FieldOfStudy</th>
+              <th *ngIf="!hideColumn[47]" scope="col">Profile</th>
+              <th *ngIf="!hideColumn[48]" scope="col">YearStartStudy</th>
+              <th *ngIf="!hideColumn[49]" scope="col">WorkPlacementAnother</th>
+              <th *ngIf="!hideColumn[50]" scope="col">StudiedAnotherUniversity</th>
+              <th *ngIf="!hideColumn[51]" scope="col">NameAnotherUniversity</th>
+              <th *ngIf="!hideColumn[52]" scope="col">DepartmentAnother</th>
+              <th *ngIf="!hideColumn[53]" scope="col">FieldOfStudyAnother</th>
+              <th *ngIf="!hideColumn[54]" scope="col">ProfileAnother</th>
+              <th *ngIf="!hideColumn[55]" scope="col">YearStartAndEndStudyAnother</th>
+              <th *ngIf="!hideColumn[56]" scope="col">WorkPlacementAndYearAnother</th>
+
+              <th *ngIf="!hideColumn[57]" scope="col">HomelessPerson</th>
+              <th *ngIf="!hideColumn[58]" scope="col">AnotherUnfavorablePersonSocialSituation</th>
+              <th *ngIf="!hideColumn[59]" scope="col">Statement</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let member of member | filter:searchText">
+              <th *ngIf="!hideColumn[0]" scope="row">{{member?.idMember}}</th>
+              <td *ngIf="!hideColumn[1]">{{member?.basicInformation.name}}</td>
+              <td *ngIf="!hideColumn[2]">{{member?.basicInformation.surname}}</td>
+              <td *ngIf="!hideColumn[3]">{{member?.basicInformation.pesel | noData}}</td>
+              <td *ngIf="!hideColumn[4]">{{member?.basicInformation.idNumber | noData}}</td>
+              <td *ngIf="!hideColumn[5]">{{member?.basicInformation.age | noData}}</td>
+              <td *ngIf="!hideColumn[6]">{{member?.basicInformation.education | noData}}</td>
+
+              <td *ngIf="!hideColumn[7]">{{member?.contactDetails.street | noData}}</td>
+              <td *ngIf="!hideColumn[8]">{{member?.contactDetails.houseNumber | noData}}</td>
+              <td *ngIf="!hideColumn[9]">{{member?.contactDetails.township | noData}}</td>
+              <td *ngIf="!hideColumn[10]">{{member?.contactDetails.postOffice | noData}}</td>
+              <td *ngIf="!hideColumn[11]">{{member?.contactDetails.postalCode | noData}}</td>
+              <td *ngIf="!hideColumn[12]">{{member?.contactDetails.community | noData}}</td>
+              <td *ngIf="!hideColumn[13]">{{member?.contactDetails.district | noData}}</td>
+              <td *ngIf="!hideColumn[14]">{{member?.contactDetails.voivodeship | noData}}</td>
+              <td *ngIf="!hideColumn[15]">{{member?.contactDetails.area | noData}}</td>
+              <td *ngIf="!hideColumn[16]">{{member?.contactDetails.phoneNumber | noData}}</td>
+              <td *ngIf="!hideColumn[17]">{{member?.contactDetails.email | noData}}</td>
+
+              <td *ngIf="!hideColumn[18]">{{member?.laborMarketStatus.unemployedPerson | noData}}</td>
+              <td *ngIf="!hideColumn[19]">{{member?.laborMarketStatus.longTermUnemployed | noData}}</td>
+              <td *ngIf="!hideColumn[20]">{{member?.laborMarketStatus.professionallyInactive | noData}}</td>
+              <td *ngIf="!hideColumn[21]">{{member?.laborMarketStatus.learningPerson | noData}}</td>
+              <td *ngIf="!hideColumn[22]">{{member?.laborMarketStatus.notLearningPerson | noData}}</td>
+              <td *ngIf="!hideColumn[23]">{{member?.laborMarketStatus.other | noData}}</td>
+              <td *ngIf="!hideColumn[24]">{{member?.laborMarketStatus.working | noData}}</td>
+              <td *ngIf="!hideColumn[25]">{{member?.laborMarketStatus.selfEmployed | noData}}</td>
+              <td *ngIf="!hideColumn[26]">{{member?.laborMarketStatus.employedInMicroSmallMediumEnterprise | noData}}</td>
+              <td *ngIf="!hideColumn[27]">{{member?.laborMarketStatus.employedInBigEnterprise | noData}}</td>
+              <td *ngIf="!hideColumn[28]">{{member?.laborMarketStatus.employedInGovernmentAdministration | noData}}</td>
+              <td *ngIf="!hideColumn[29]">{{member?.laborMarketStatus.employedInLocalGovernmentAdministration | noData}}</td>
+              <td *ngIf="!hideColumn[30]">{{member?.laborMarketStatus.employedInNonGovernmentalOrganization | noData}}</td>
+              <td *ngIf="!hideColumn[31]">{{member?.laborMarketStatus.nameOfWorkplace | noData}}</td>
+              <td *ngIf="!hideColumn[32]">{{member?.laborMarketStatus.occupationPerformed | noData}}</td>
+              <td *ngIf="!hideColumn[33]">{{member?.laborMarketStatus.nationalMinority | noData}}</td>
+              <td *ngIf="!hideColumn[34]">{{member?.laborMarketStatus.emigrant | noData}}</td>
+              <td *ngIf="!hideColumn[35]">{{member?.laborMarketStatus.disabledPerson | noData}}</td>
+
+              <td *ngIf="!hideColumn[36]">{{member?.directionOfEducation.nameUniversity | noData}}</td>
+              <td *ngIf="!hideColumn[37]">{{member?.directionOfEducation.department | noData}}</td>
+              <td *ngIf="!hideColumn[38]">{{member?.directionOfEducation.fieldOfStudy | noData}}</td>
+              <td *ngIf="!hideColumn[39]">{{member?.directionOfEducation.profile | noData}}</td>
+              <td *ngIf="!hideColumn[40]">{{member?.directionOfEducation.degreeOfStudies | noData}}</td>
+              <td *ngIf="!hideColumn[41]">{{member?.directionOfEducation.yearStartStudy | noData}}</td>
+
+              <td *ngIf="!hideColumn[42]">{{member?.additionalInformation.repeatYear | noData}}</td>
+              <td *ngIf="!hideColumn[43]">{{member?.additionalInformation.studyingAnotherDirection | noData}}</td>
+              <td *ngIf="!hideColumn[44]">{{member?.additionalInformation.nameUniversity | noData}}</td>
+              <td *ngIf="!hideColumn[45]">{{member?.additionalInformation.department | noData}}</td>
+              <td *ngIf="!hideColumn[46]">{{member?.additionalInformation.fieldOfStudy | noData}}</td>
+              <td *ngIf="!hideColumn[47]">{{member?.additionalInformation.profile | noData}}</td>
+              <td *ngIf="!hideColumn[48]">{{member?.additionalInformation.yearStartStudy | noData}}</td>
+              <td *ngIf="!hideColumn[49]">{{member?.additionalInformation.workPlacementAndYear | noData}}</td>
+              <td *ngIf="!hideColumn[50]">{{member?.additionalInformation.studiedAnotherUniversity | noData}}</td>
+              <td *ngIf="!hideColumn[51]">{{member?.additionalInformation.nameAnotherUniversity | noData}}</td>
+              <td *ngIf="!hideColumn[52]">{{member?.additionalInformation.departmentAnother | noData}}</td>
+              <td *ngIf="!hideColumn[53]">{{member?.additionalInformation.fieldOfStudyAnother | noData}}</td>
+              <td *ngIf="!hideColumn[54]">{{member?.additionalInformation.profileAnother | noData}}</td>
+              <td *ngIf="!hideColumn[55]">{{member?.additionalInformation.yearStartAndEndStudyAnother | noData}}</td>
+              <td *ngIf="!hideColumn[56]">{{member?.additionalInformation.workPlacementAndYearAnother | noData}}</td>
+
+              <td *ngIf="!hideColumn[57]">{{member?.statement.homelessPerson | noData}}</td>
+              <td *ngIf="!hideColumn[58]">{{member?.statement.anotherUnfavorablePersonSocialSituation | noData}}</td>
+              <td *ngIf="!hideColumn[59]">{{member?.statement.statement | noData}}</td>
+
+            </tr>
+            </tbody>
+          </table>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" [disabled]="!exportType" (click)="export(exportType,'exportTable')" class="btn btn-danger " data-dismiss="modal">Export as {{exportType}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

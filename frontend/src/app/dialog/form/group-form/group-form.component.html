@@ -1,0 +1,17 @@
+<div>
+  <p *ngIf="loadProject else loading"> Aktualnie trwaja zapisy na projekt: {{activeProject[0]?.nameProject}}</p>
+  <app-start-form *ngIf="form[0]" (nextStep)="next($event)" [editMode]="editMode" [member]="member"></app-start-form>
+  <app-basic-information-form *ngIf="form[1]" (nextStep)="next($event)" [editMode]="editMode" [editSubject]="editSubject" (basicInformationOutput)="addBasicInformation($event)" [basicInformationInput]="member.basicInformation"></app-basic-information-form>
+  <app-contact-details-form *ngIf="form[2]" (nextStep)="next($event)" [editMode]="editMode" [editSubject]="editSubject" (contactDetailsOutput)="addContactDetails($event)" [contactDetailsInput]="member.contactDetails"></app-contact-details-form>
+  <app-labor-market-status-form *ngIf="form[3]" (nextStep)="next($event)" [editMode]="editMode" [editSubject]="editSubject" (laborMarketStatusOutput)="addLaborMarketStatusOutput($event)" [laborMarketStatusInput]="member.laborMarketStatus"> </app-labor-market-status-form>
+  <app-direction-of-education-form *ngIf="form[4]" (nextStep)="next($event)" [editMode]="editMode" [editSubject]="editSubject" (directionOfEducationOutput)="addDirectionOfEducation($event)" [directionOfEducationInput]="member.directionOfEducation" [courser]="universityCourses" [departments]="universityDepartments"></app-direction-of-education-form>
+  <app-additional-information-form *ngIf="form[5]" (nextStep)="next($event)" [editMode]="editMode" [editSubject]="editSubject" (additionalInformationOutput)="addAdditionalInformation($event)" [additionalInformationInput]="member.additionalInformation" [courser]="universityCourses" [departments]="universityDepartments"></app-additional-information-form>
+  <app-statement-form *ngIf="form[6]" (nextStep)="next($event)" [editMode]="editMode" [editSubject]="editSubject" (statementOutput)="addStatement($event)" (send)="sendForm($event)" [statementInput]="member.statement"></app-statement-form>
+</div>
+<ng-template #loading>
+  <div class="text-center spiner-size">
+    <div class="spinner-border " style="width: 1rem; height: 1rem;" role="status">
+      <span class="sr-only ">Loading...</span>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,59 @@
+<form [formGroup]="directionOfEducationForm" class="form-group">
+  <div class="form-group">
+    <label> Name University :</label>
+    <input type="text" formControlName="nameUniversity" class="form-control" name="nameUniversity" placeholder="Enter Your Name University">
+    <div class="alert alert-warning mt-1" *ngIf="directionOfEducationForm.get('nameUniversity').invalid && directionOfEducationForm.get('nameUniversity').touched">
+      Invalid Name University
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Department:</label>
+    <select id="propertyTypeDepartment" class="form-control form-control-xs" formControlName="department">
+      <option [ngValue]="null">Select one...</option>
+      <option [ngValue]="'other'">Other</option>
+      <option *ngFor="let department of departments" [ngValue]="department.nameDepartments">{{department?.shortcut}} - {{department?.nameDepartments}}</option>
+    </select>
+    <div class="alert alert-warning mt-1" *ngIf="directionOfEducationForm.get('department').invalid && directionOfEducationForm.get('department').touched">
+      Invalid Department
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Field Of Study:</label>
+    <select id="propertyTypeFieldOfStudy" class="form-control form-control-xs" formControlName="fieldOfStudy">
+      <option [ngValue]="null">Select one...</option>
+      <option [ngValue]="'other'">Other</option>
+      <ng-container *ngFor="let field of courser">
+      <option *ngIf="field?.universityDepartments.nameDepartments == directionOfEducationForm.get('department').value" [ngValue]="field.nameCourses">{{field?.nameCourses}} - {{field?.universityDepartments.nameDepartments}}</option>
+      </ng-container>
+    </select>
+    <div class="alert alert-warning mt-1" *ngIf="directionOfEducationForm.get('fieldOfStudy').invalid && directionOfEducationForm.get('fieldOfStudy').touched">
+      Invalid Field Of Study
+    </div>
+  </div>
+  <div class="form-group">
+    <label> Profile :</label>
+    <input type="text" formControlName="profile" class="form-control" name="profile" placeholder="Enter Your Profile">
+    <div class="alert alert-warning mt-1" *ngIf="directionOfEducationForm.get('profile').invalid && directionOfEducationForm.get('profile').touched">
+      Invalid profile
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Degree Of Studies:</label>
+    <select id="propertyTypeDegreeOfStudies" class="form-control form-control-xs" formControlName="degreeOfStudies">
+      <option [ngValue]="null">Select one...</option>
+      <option *ngFor="let degree of degreeOfStudy | keyvalue" [ngValue]="degree.value">{{degree.value}}</option>
+    </select>
+    <div class="alert alert-warning mt-1" *ngIf="directionOfEducationForm.get('degreeOfStudies').invalid && directionOfEducationForm.get('degreeOfStudies').touched">
+     Invalid Degree Of Studies
+    </div>
+  </div>
+  <div class="form-group">
+    <label> Year Start Study :</label>
+    <input type="text" formControlName="yearStartStudy" class="form-control" name="yearStartStudy" placeholder="Enter Your Year Start Study">
+    <div class="alert alert-warning mt-1" *ngIf="directionOfEducationForm.get('yearStartStudy').invalid && directionOfEducationForm.get('yearStartStudy').touched">
+      Invalid Year Start Study
+    </div>
+  </div>
+  <button type="button" (click)="next()" [disabled]="directionOfEducationForm.invalid" class="btn btn-danger mt-1 mb-1" >Next</button>
+  <button type="button" (click)="previous()" class="btn btn-danger mt-1 mb-1" >Previous</button>
+</form>

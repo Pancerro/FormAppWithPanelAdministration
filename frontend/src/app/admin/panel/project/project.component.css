@@ -1,0 +1,7 @@
+.pointer {
+  cursor: pointer;
+}
+.line-chart-parent {
+  display: grid;
+  min-height: 40px;
+}

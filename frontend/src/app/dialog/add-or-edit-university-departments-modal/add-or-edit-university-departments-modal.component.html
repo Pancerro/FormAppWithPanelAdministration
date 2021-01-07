@@ -1,0 +1,37 @@
+<!-- Modal -->
+<div class="modal fade" id="modalAddDepartment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 *ngIf="!editMode" class="modal-title text-center" >Add Department</h5>
+        <h5 *ngIf="editMode" class="modal-title text-center">Edit Department</h5>
+        <button type="button" class="close" id="closeModalButton" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="departmentsForm" class="form-group">
+          <div class="form-group">
+            <label> Name Department :</label>
+            <input type="text" formControlName="nameDepartments" class="form-control" name="nameDepartments" placeholder="Enter Name Departments">
+            <div class="alert alert-warning mt-1" *ngIf="departmentsForm.get('nameDepartments').invalid && departmentsForm.get('nameDepartments').touched">
+              Invalid Name Departments
+            </div>
+          </div>
+          <div class="form-group">
+            <label> Shortcut :</label>
+            <input type="text" formControlName="shortcut" class="form-control" name="shortcut" placeholder="Enter Shortcut">
+            <div class="alert alert-warning mt-1" *ngIf="departmentsForm.get('shortcut').invalid && departmentsForm.get('shortcut').touched">
+              Invalid shortcut
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel</button>
+        <button type="button" *ngIf="!editMode" [disabled]="departmentsForm.invalid" (click)="sendForm()" class="btn btn-danger ">Add</button>
+        <button type="button" *ngIf="editMode" [disabled]="departmentsForm.invalid" (click)="sendForm()" class="btn btn-danger ">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>

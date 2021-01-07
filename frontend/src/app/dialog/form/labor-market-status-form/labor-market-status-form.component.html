@@ -1,0 +1,118 @@
+<form [formGroup]="laborMarketStatusForm" class="form-group">
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" formControlName="unemployedPerson" type="checkbox" [checked]="laborMarketStatusInput.unemployedPerson" id="unemployedPerson">
+            <label class="form-check-label" for="unemployedPerson">
+        Unemployed Person
+      </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('unemployedPerson').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="longTermUnemployed" type="checkbox" [checked]="laborMarketStatusInput.longTermUnemployed" id="longTermUnemployed">
+            <label class="form-check-label" for="longTermUnemployed">
+        Long Term Unemployed
+      </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="professionallyInactive" type="checkbox" [checked]="laborMarketStatusInput.professionallyInactive" id="professionallyInactive">
+            <label class="form-check-label" for="professionallyInactive">
+        Professionally Inactive
+      </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="learningPerson" type="checkbox" [checked]="laborMarketStatusInput.learningPerson" id="learningPerson">
+            <label class="form-check-label" for="learningPerson">
+        Learning Person
+      </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="notLearningPerson" type="checkbox" [checked]="laborMarketStatusInput.notLearningPerson" id="notLearningPerson">
+            <label class="form-check-label" for="notLearningPerson">
+        Not Learning Person
+      </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="other" type="checkbox" [checked]="laborMarketStatusInput.other" id="other">
+            <label class="form-check-label" for="other">
+        Other
+      </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" formControlName="working" type="checkbox" [checked]="laborMarketStatusInput.working" id="working">
+            <label class="form-check-label" for="working">
+        Working
+      </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="selfEmployed" type="checkbox" [checked]="laborMarketStatusInput.selfEmployed" id="selfEmployed">
+            <label class="form-check-label" for="selfEmployed">
+        Self Employed
+      </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="employedInMicroSmallMediumEnterprise" type="checkbox" [checked]="laborMarketStatusInput.employedInMicroSmallMediumEnterprise" id="employedInMicroSmallMediumEnterprise">
+            <label class="form-check-label" for="employedInMicroSmallMediumEnterprise">
+        Employed In Micro Small Medium Enterprise
+      </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="employedInBigEnterprise" type="checkbox" [checked]="laborMarketStatusInput.employedInBigEnterprise" id="employedInBigEnterprise">
+            <label class="form-check-label" for="employedInBigEnterprise">
+      Employed In Big Enterprise
+    </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="employedInGovernmentAdministration" type="checkbox" [checked]="laborMarketStatusInput.employedInGovernmentAdministration" id="employedInGovernmentAdministration">
+            <label class="form-check-label" for="employedInGovernmentAdministration">
+      Employed In Government Administration
+    </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="employedInLocalGovernmentAdministration" type="checkbox" [checked]="laborMarketStatusInput.employedInLocalGovernmentAdministration" id="employedInLocalGovernmentAdministration">
+            <label class="form-check-label" for="employedInLocalGovernmentAdministration">
+      Employed In Local Government Administration
+    </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-check ml-3">
+            <input class="form-check-input" formControlName="employedInNonGovernmentalOrganization" type="checkbox" [checked]="laborMarketStatusInput.employedInNonGovernmentalOrganization" id="employedInNonGovernmentalOrganization">
+            <label class="form-check-label" for="employedInNonGovernmentalOrganization">
+      Employed In Non Governmental Organization
+    </label>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-group ml-3">
+            <label> Name Of Workplace :</label>
+            <input type="text" formControlName="nameOfWorkplace" class="form-control" name="nameOfWorkplace" placeholder="Enter Your Name of Workplace">
+            <div class="alert alert-warning mt-1" *ngIf="laborMarketStatusForm.get('nameOfWorkplace').invalid && laborMarketStatusForm.get('nameOfWorkplace').touched">
+                Invalid Name of Workplace
+            </div>
+        </div>
+        <div *ngIf="laborMarketStatusForm.get('working').value" class="form-group ml-3">
+            <label> Occupation Performed :</label>
+            <input type="text" formControlName="occupationPerformed" class="form-control" name="occupationPerformed" placeholder="Enter Your Occupation Performed">
+            <div class="alert alert-warning mt-1" *ngIf="laborMarketStatusForm.get('occupationPerformed').invalid && laborMarketStatusForm.get('occupationPerformed').touched">
+                Invalid Occupation Performed
+            </div>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="nationalMinority" type="checkbox" [checked]="laborMarketStatusInput.nationalMinority" id="nationalMinority">
+            <label class="form-check-label" for="nationalMinority">
+        National Minority
+      </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="emigrant" type="checkbox" [checked]="laborMarketStatusInput.emigrant" id="emigrant">
+            <label class="form-check-label" for="emigrant">
+        Emigrant
+      </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" formControlName="disabledPerson" type="checkbox" [checked]="laborMarketStatusInput.disabledPerson" id="disabledPerson">
+            <label class="form-check-label" for="disabledPerson">
+        Disabled Person
+      </label>
+        </div>
+
+    </div>
+    <button type="button" (click)="next()" [disabled]="laborMarketStatusForm.invalid" class="btn btn-danger mt-1 mb-1">Next</button>
+    <button type="button" (click)="previous()" class="btn btn-danger mt-1 mb-1">Previous</button>
+</form>

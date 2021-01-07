@@ -1,0 +1,117 @@
+
+<form [formGroup]="additionalInformationForm" class="form-group">
+  <div class="form-check">
+    <input class="form-check-input" formControlName="repeatYear" type="checkbox" [checked]="additionalInformationInput.repeatYear" id="repeatYear">
+    <label class="form-check-label" for="repeatYear">
+      Repeat Year
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" formControlName="studyingAnotherDirection" type="checkbox" [checked]="additionalInformationInput.studyingAnotherDirection" id="studyingAnotherDirection">
+    <label class="form-check-label" for="studyingAnotherDirection">
+      Studying Another Direction
+    </label>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studyingAnotherDirection').value" class="form-group ml-3">
+    <label> Name University :</label>
+    <input type="text" formControlName="nameUniversity" class="form-control" name="nameUniversity" placeholder="Enter Your Name University">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('nameUniversity').invalid && additionalInformationForm.get('nameUniversity').touched">
+      Invalid Name University
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studyingAnotherDirection').value" class="form-group ml-3">
+    <label>Department:</label>
+    <select  id="propertyTypeDepartment" class="form-control form-control-xs" formControlName="department">
+      <option [ngValue]="null">Select one...</option>
+      <option [ngValue]="'other'">Other</option>
+      <option *ngFor="let department of departments" [ngValue]="department.nameDepartments">{{department?.shortcut}} - {{department?.nameDepartments}}</option>
+    </select>
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('department').invalid && additionalInformationForm.get('department').touched">
+      Invalid Department
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studyingAnotherDirection').value" class="form-group ml-3">
+    <label>Field Of Study:</label>
+    <select id="propertyTypeFieldOfStudy" class="form-control form-control-xs" formControlName="fieldOfStudy">
+      <option [ngValue]="null">Select one...</option>
+      <option [ngValue]="'other'">Other</option>
+      <ng-container *ngFor="let field of courser">
+        <option *ngIf="field?.universityDepartments.nameDepartments == additionalInformationForm.get('department').value" [ngValue]="field.nameCourses">{{field?.nameCourses}} - {{field?.universityDepartments.nameDepartments}}</option>
+      </ng-container>
+    </select>
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('fieldOfStudy').invalid && additionalInformationForm.get('fieldOfStudy').touched">
+      Invalid Field Of Study
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studyingAnotherDirection').value" class="form-group ml-3">
+    <label> Profile :</label>
+    <input type="text" formControlName="profile" class="form-control" name="profile" placeholder="Enter Your Profile">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('profile').invalid && additionalInformationForm.get('profile').touched">
+      Invalid profile
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studyingAnotherDirection').value" class="form-group ml-3">
+    <label> Year Start Study :</label>
+    <input type="text" formControlName="yearStartStudy" class="form-control" name="yearStartStudy" placeholder="Enter Your Year Start Study">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('yearStartStudy').invalid && additionalInformationForm.get('yearStartStudy').touched">
+      Invalid Year Start Study
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studyingAnotherDirection').value"  class="form-group ml-3">
+    <label> Work Placement And Year :</label>
+    <input type="text" formControlName="workPlacementAndYear" class="form-control" name="workPlacementAndYear" placeholder="Enter Your Work Placement And Year">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('workPlacementAndYear').invalid && additionalInformationForm.get('workPlacementAndYear').touched">
+      Invalid Work Placement And Year
+    </div>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" formControlName="studiedAnotherUniversity" type="checkbox" [checked]="additionalInformationInput.studiedAnotherUniversity" id="studiedAnotherUniversity">
+    <label class="form-check-label" for="studiedAnotherUniversity">
+      Studied Another University
+    </label>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studiedAnotherUniversity').value" class="form-group ml-3">
+    <label> Name Another University :</label>
+    <input type="text" formControlName="nameUniversity" class="form-control" name="nameUniversity" placeholder="Enter Your Name University">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('nameUniversity').invalid && additionalInformationForm.get('nameUniversity').touched">
+      Invalid Name Another University
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studiedAnotherUniversity').value" class="form-group ml-3">
+    <label>  Name Another Department :</label>
+    <input type="text" formControlName="departmentAnother" class="form-control" name="departmentAnother" placeholder="Enter Your Department Another">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('departmentAnother').invalid && additionalInformationForm.get('departmentAnother').touched">
+      Invalid Name Department Another
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studiedAnotherUniversity').value" class="form-group ml-3">
+    <label> Name Field Of Study Another :</label>
+    <input type="text" formControlName="fieldOfStudyAnother" class="form-control" name="fieldOfStudyAnother" placeholder="Enter Your Field Of Study Another">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('fieldOfStudyAnother').invalid && additionalInformationForm.get('fieldOfStudyAnother').touched">
+      Invalid Field Of Study Another
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studiedAnotherUniversity').value" class="form-group ml-3">
+    <label> Profile Another :</label>
+    <input type="text" formControlName="profileAnother" class="form-control" name="profileAnother" placeholder="Enter Your Profile Another">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('profileAnother').invalid && additionalInformationForm.get('profileAnother').touched">
+      Invalid Profile Another
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studiedAnotherUniversity').value" class="form-group ml-3">
+    <label> Year Start And End Study Another:</label>
+    <input type="text" formControlName="yearStartAndEndStudyAnother" class="form-control" name="yearStartAndEndStudyAnother" placeholder="Enter Your Year Start And End Study Another">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('yearStartAndEndStudyAnother').invalid && additionalInformationForm.get('yearStartAndEndStudyAnother').touched">
+      Invalid Year Start And End Study Another
+    </div>
+  </div>
+  <div *ngIf="additionalInformationForm.get('studiedAnotherUniversity').value" class="form-group ml-3">
+    <label> Work Placement And Year Another :</label>
+    <input type="text" formControlName="workPlacementAndYearAnother" class="form-control" name="workPlacementAndYearAnother" placeholder="Enter Your Work Placement And Year Another">
+    <div class="alert alert-warning mt-1" *ngIf="additionalInformationForm.get('workPlacementAndYearAnother').invalid && additionalInformationForm.get('workPlacementAndYearAnother').touched">
+      Invalid Work Placement And Year Another
+    </div>
+  </div>
+  <button type="button" (click)="next()" [disabled]="additionalInformationForm.invalid" class="btn btn-danger mt-1 mb-1" >Next</button>
+  <button type="button" (click)="previous()" class="btn btn-danger mt-1 mb-1" >Previous</button>
+</form>
