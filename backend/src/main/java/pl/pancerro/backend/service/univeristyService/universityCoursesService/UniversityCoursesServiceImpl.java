@@ -35,6 +35,7 @@ public class UniversityCoursesServiceImpl implements UniversityCoursesService {
         if(optionalUniversityCourses.isPresent()) {
             UniversityCourses updateUniversityCourses = optionalUniversityCourses.get();
             updateUniversityCourses.setNameCourses(universityCourses.getNameCourses());
+            updateUniversityCourses.setUniversityDepartments(universityCourses.getUniversityDepartments());
             universityCoursesRepo.save(updateUniversityCourses);
             return true;
         } else return false;
